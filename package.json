@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Remove reply quotations from emails",
   "main": "lib/planer.js",
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
+  },
   "scripts": {
     "test": "mocha test/",
     "compile": "coffee -o lib -c src"
