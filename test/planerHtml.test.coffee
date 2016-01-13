@@ -14,7 +14,7 @@ describe 'planer#extractFromHtml', ->
     msgBody = ''
     expect(planer.extractFromHtml(msgBody, @dom)).to.equal('')
 
-  it 'should return a the text of a message with spliiter inside blockqouote', ->
+  it 'should return a the text of a message with splitter inside blockqouote', ->
     msgBody = """Reply
       <blockquote>
 
@@ -29,7 +29,7 @@ describe 'planer#extractFromHtml', ->
       </blockquote>"""
     expect(planer.extractFromHtml(msgBody, @dom)).to.equal('<html><body>Reply\n</body></html>')
 
-  it 'should return a the text of a message with spliiter outside blockqouote', ->
+  it 'should return a the text of a message with splitter outside blockqouote', ->
     msgBody = """Reply
 
       <div>

@@ -1,5 +1,4 @@
 {expect} = require 'chai'
-jsdom = require 'jsdom'
 planer = require '../src/planer'
 
 describe 'planer#extractFromPlain', ->

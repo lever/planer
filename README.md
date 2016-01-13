@@ -47,7 +47,7 @@ Run `npm run compile` to compile the source into javascript files before submitt
 
 # MIT Licence
 
-Copyright (c) 2015 Lever
+Copyright (c) 2015 Leighton Wallace
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
