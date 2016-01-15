@@ -1,6 +1,6 @@
 {
   "name": "planer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Remove reply quotations from emails",
   "main": "lib/planer.js",
   "publishConfig": {
