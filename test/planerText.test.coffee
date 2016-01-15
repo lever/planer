@@ -38,7 +38,7 @@ describe 'planer#extractFromPlain', ->
       bla-bla - bla"""
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)
 
-  it 'should pick up replies after the quotation', ->
+  it 'picks up replies after the quotation', ->
     msgBody = """On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
       >
@@ -47,7 +47,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal('Test reply')
 
-  it 'should detect wrapping replies', ->
+  it 'detects wrapping replies', ->
     msgBody = """Test reply
       On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
@@ -60,7 +60,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)
 
-  it 'should detect wrapping of nested replies', ->
+  it 'detects wrapping of nested replies', ->
     msgBody = """Test reply
       On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
@@ -79,7 +79,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)
 
-  it 'should not be fooled by 2 line splitters', ->
+  it 'is not fooled by 2 line splitters', ->
     msgBody = """Test reply
       On Fri, May 6, 2011 at 6:03 PM, Roman Tkachenko from Hacker News
       <roman@definebox.com> wrote:
@@ -96,7 +96,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)
 
-  it 'should not be fooled by 3 line splitters', ->
+  it 'not fooled by 3 line splitters', ->
     msgBody = """Test reply
       On Nov 30, 2011, at 12:47 PM, Somebody <
       416ffd3258d4d2fa4c85cfa4c44e1721d66e3e8f4@somebody.domain.com>
@@ -107,7 +107,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal('Test reply')
 
-  it 'should work with brief quotes', ->
+  it 'works with brief quotes', ->
     msgBody = """Hi
       On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
@@ -115,7 +115,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal('Hi')
 
-  it 'should work with brief quotes', ->
+  it 'works with brief quotes', ->
     msgBody = """Hi
       On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
@@ -123,7 +123,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal('Hi')
 
-  it 'should not be fooled bt indents', ->
+  it 'is not fooled bt indents', ->
     msgBody = """YOLO salvia cillum kogi typewriter mumblecore cardigan skateboard Austin.
 
       ------On 12/29/1987 17:32 PM, Julius Caesar wrote-----
@@ -132,7 +132,7 @@ describe 'planer#extractFromPlain', ->
           """
     expect(planer.extractFromPlain(msgBody)).to.equal('YOLO salvia cillum kogi typewriter mumblecore cardigan skateboard Austin.')
 
-  it ' should not be fooled by empty lines in quoted messages', ->
+  it 'is not fooled by empty lines in quoted messages', ->
     msgBody = """Btw blah blah...
 
       On Tue, Jan 27, 2015 at 12:42 PM -0800, "Company" <christine.XXX@XXX.com> wrote:
@@ -150,7 +150,7 @@ describe 'planer#extractFromPlain', ->
 
     expect(planer.extractFromPlain(msgBody)).to.equal('Btw blah blah...')
 
-  it 'should not barf on unicode characters in a name', ->
+  it 'does not barf on unicode characters in a name', ->
     msgBody = """Replying ok
       2011/4/7 Nathan \xd0\xb8ova <support@example.com>
 
@@ -319,7 +319,7 @@ describe 'planer#extractFromPlain', ->
       """
     expect(planer.extractFromPlain(msgBody)).to.equal('Hi')
 
-  it 'it can handle weird dates in header block', ->
+  it 'can handle weird dates in header block', ->
     msgBody = """Hi
 
       Date: Fri=2C 28 Sep 2012 10:55:48 +0000
@@ -330,7 +330,7 @@ describe 'planer#extractFromPlain', ->
       """
     expect(planer.extractFromPlain(msgBody)).to.equal('Hi')
 
-  it 'it preserves forwarded messages', ->
+  it 'preserves forwarded messages', ->
     msgBody = """FYI
 
     ---------- Forwarded message ----------
@@ -343,7 +343,7 @@ describe 'planer#extractFromPlain', ->
     Text"""
     expect(planer.extractFromPlain(msgBody)).to.equal(msgBody)
 
-  it 'it is not fooled by forwards inside quotations', ->
+  it 'is not fooled by forwards inside quotations', ->
     msgBody = """Blah
 
       -----Original Message-----
@@ -360,6 +360,10 @@ describe 'planer#extractFromPlain', ->
       Text"""
     expect(planer.extractFromPlain(msgBody)).to.equal('Blah')
 
-  it 'it can handle a message with 2 links', ->
+  it 'can handle a message with 2 links', ->
     msgBody = "<http://link1> <http://link2>"
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody)
+
+  it 'does not throw errors on messages with malformed links', ->
+    msgBody = "http://test.lever.co/YOU HAVE AN INTERVIEW TODAY\nhttps://test.lever.co/interviews/07a605a0-0d0a-00e8-00aa-f02ca5350180 is coming up today athttps://www.google.com/calendar/event?eid=Z2FrbzhxcW0000YwbmtmMDN1ZWZ2OHAycnMgbGV2Z0000W1vLmNvbV82am00000000hvY3RjN200000000Vjc00000Bn.\n\nhttps://test.lever.co/interviews/0000a5ab-000b-43aa-a00a-f020003aaa84"
     expect(planer.extractFromPlain(msgBody)).to.equal(msgBody)
