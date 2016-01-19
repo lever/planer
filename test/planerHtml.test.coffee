@@ -1,5 +1,7 @@
 {expect} = require 'chai'
+fs = require 'fs'
 jsdom = require 'jsdom'
+path = require 'path'
 planer = require '../src/planer'
 
 describe 'planer#extractFromHtml', ->
@@ -58,7 +60,7 @@ describe 'planer#extractFromHtml', ->
         </div>
       </blockquote>
       """
-    expect(planer.extractFromHtml(msgBody, @dom)).to.equal("<html><body>Reply\n<blockquote>Regular</blockquote>\n\n</body></html>")
+    expect(planer.extractFromHtml(msgBody, @dom)).to.equal("<html><body>Reply\n<blockquote>  Regular  </blockquote>\n\n</body></html>")
 
   it 'should not be fooled by a regular blockquote', ->
     msgBody = """
@@ -97,7 +99,7 @@ describe 'planer#extractFromHtml', ->
 
       <div/>
       """
-    expect(planer.extractFromHtml(msgBody, @dom)).to.equal('<html><body>Reply\n</body></html>')
+    expect(planer.extractFromHtml(msgBody, @dom)).to.equal('<html><body>Reply\n<div>    </div></body></html>')
 
   it 'handles gmail quotes', ->
     msgBody = """Reply
@@ -198,4 +200,23 @@ describe 'planer#extractFromHtml', ->
       </body></html>"""
 
     expect(planer.extractFromHtml(msgBody, @dom)).to.equal(reply)
+
+  describe 'examples from files', ->
+    absolutePath = (relativePath) ->
+      path.join(__dirname, relativePath)
+
+    it 'handles emails with numerous microsoft namespaces', ->
+      replySnippet = 'Lorem ipsum dolor sit amet'
+      originalMsgSnippet = 'Odio et pretium rutrum neque'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/microsoft-namespaces.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(msgBody).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
 

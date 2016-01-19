@@ -59,8 +59,13 @@ exports.extractFromPlain = (msgBody) ->
 # then checking deleted checkpoints,
 # then deleting necessary tags.
 #
+# Will use the document provided to create a new document using:
+# Document.implementation.createHTMLDocument()
+#
 # @param msgBody [String] the html content of the email
-# @param dom [Document] a document object or equivalent implementation
+# @param dom [Document] a document object or equivalent implementation.
+#   Must respond to `DOMImplementation.createHTMLDocument()`.
+#   @see https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument
 exports.extractFromHtml = (msgBody, dom) ->
   unless dom?
     console.error("No dom provided to parse html.")
@@ -102,7 +107,7 @@ exports.extractFromHtml = (msgBody, dom) ->
     matches = line.match(htmlPlaner.CHECKPOINT_PATTERN) || []
     lineCheckpoints[index] = matches.map((match) -> parseInt(match.slice(4, -4)))
 
-  # Remove checkpoints from lines to pass through plain text algorith
+  # Remove checkpoints from lines to pass through plain text algorithm
   lines = lines.map((line) -> line.replace(htmlPlaner.CHECKPOINT_PATTERN, ''))
 
   markers = exports.markMessageLines lines
@@ -110,7 +115,7 @@ exports.extractFromHtml = (msgBody, dom) ->
   exports.processMarkedLines(lines, markers, returnFlags)
 
   # No lines deleted by plain text algorithm, ready to return
-  unless returnFlags.wereLinesDeleted
+  if !returnFlags.wereLinesDeleted
     if haveCutQuotations
       # If we cut a quotation element out of the html, return the html output of the copied document.
       return _restore_CRLF(emailDocumentCopy.documentElement.outerHTML, crlfReplaced)
@@ -124,6 +129,7 @@ exports.extractFromHtml = (msgBody, dom) ->
     for checkpoint in lineCheckpoints[i]
       quotationCheckpoints[checkpoint] = true
 
+  # Remove the element that have been identified as part of the quoted message
   htmlPlaner.deleteQuotationTags emailDocumentCopy.body, 0, quotationCheckpoints
 
   return emailDocumentCopy.documentElement.outerHTML

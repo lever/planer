@@ -7,7 +7,7 @@ QUOTE_IDS = ['OLK_SRC_BODY_SECTION']
 
 # Create an instance of Document using the message html and the injected base document
 exports.createEmailDocument = (msgBody, dom) ->
-  emailDocument = dom.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null)
+  emailDocument = dom.implementation.createHTMLDocument()
 
   # Write html of email to `html` element
   [htmlElement] = emailDocument.getElementsByTagName('html');
@@ -21,7 +21,7 @@ exports.createEmailDocument = (msgBody, dom) ->
 
   # Remove 'head' element from document
   [head] = emailDocument.getElementsByTagName('head')
-  emailDocument.documentElement.removeChild(head)
+  emailDocument.documentElement.removeChild(head) if head
 
   return emailDocument
 
@@ -35,7 +35,7 @@ exports.addCheckpoints = (htmlNode, counter) ->
   # 1 is an element
   if htmlNode.nodeType == 1
     # Pad with spacing to ensure there are text nodes at the begining and end of non-body elements
-    htmlNode.innerHTML = "  #{  htmlNode.innerHTML }  " unless htmlNode.tagName == 'body'
+    htmlNode.innerHTML = "  #{  htmlNode.innerHTML }  " unless hasTagName(htmlNode, 'body')
     # Ensure that there are text nodes between sibling elements
     ensureTextNodeBetweenChildElements(htmlNode)
     for childNode in htmlNode.childNodes
@@ -55,7 +55,14 @@ exports.deleteQuotationTags = (htmlNode, counter, quotationCheckpoints) ->
   # 1 is an element
   if htmlNode.nodeType == 1
     # Collect child nodes that are marked as in the quotation
+    childTagInQuotation = false
     quotationChildren = []
+
+    # Pad with spacing to ensure there are text nodes at the begining and end of non-body elements
+    htmlNode.innerHTML = "  #{  htmlNode.innerHTML }  " unless hasTagName(htmlNode, 'body')
+    # Ensure that there are text nodes between sibling elements
+    ensureTextNodeBetweenChildElements(htmlNode)
+
     for childNode in htmlNode.childNodes
       [counter, childTagInQuotation] = exports.deleteQuotationTags(childNode, counter, quotationCheckpoints)
       # Keep tracking if all children are in the quotation
@@ -127,35 +134,63 @@ exports.cutFromBlock = (emailDocument) ->
 
   if lastBlock?
     # Find parent div and remove from document
-    while lastBlock? && lastBlock.parentElement?
-      if lastBlock.tagName == 'div'
-        lastBlock.parentElement.removeChild(lastBlock)
-        return true
-      else
-        lastBlock = lastBlock.parentElement
-  else
+    parentDiv = findParentDiv(lastBlock)
+
+    if parentDiv? && !elementIsAllContent(parentDiv)
+      parentDiv.parentElement.removeChild(parentDiv)
+      return true
+
+
     # Handle the case when From: block goes right after e.g. <hr> and is not enclosed in a tag itself
-    xpathQuery = "//text()[starts-with(normalize-space(.), 'From:')]|//text()[starts-with(normalize-space(.), 'Date:')]"
-    xpathResult = emailDocument.evaluate(xpathQuery, emailDocument, null, 9, null)
+  xpathQuery = "//text()[starts-with(normalize-space(.), 'From:')]|//text()[starts-with(normalize-space(.), 'Date:')]"
+  xpathResult = emailDocument.evaluate(xpathQuery, emailDocument, null, 9, null)
 
-    # The text node that is the result
-    textNode = xpathResult.singleNodeValue
-    return false unless textNode?
+  # The text node that is the result
+  textNode = xpathResult.singleNodeValue
+  return false unless textNode?
 
-    # The previous sibling stopped the initial xpath query from working, so it is likely a splitter (like an hr)
-    splitterElement = textNode.previousSibling
-    splitterElement?.parentElement?.removeChild(splitterElement)
+  # The text node is wrapped in a span element. All sorts formatting could be happening here.
+  # Return false and hope plain text algorithm can figure it out.
+  return false if isTextNodeWrappedInSpan(textNode)
 
-    # Remove all subsequent siblings of the textNode
+  # The previous sibling stopped the initial xpath query from working, so it is likely a splitter (like an hr)
+  splitterElement = textNode.previousSibling
+  splitterElement?.parentElement?.removeChild(splitterElement)
+
+  # Remove all subsequent siblings of the textNode
+  afterSplitter = textNode.nextSibling
+  while afterSplitter?
+    afterSplitter.parentNode.removeChild(afterSplitter)
     afterSplitter = textNode.nextSibling
-    while afterSplitter?
-      afterSplitter.parentNode.removeChild(afterSplitter)
-      afterSplitter = textNode.nextSibling
 
-    textNode.parentNode.removeChild(textNode)
-    return true
+  textNode.parentNode.removeChild(textNode)
+  return true
 
-  return false
+findParentDiv = (element) ->
+  while element? && element.parentElement?
+    if hasTagName(element, 'div')
+      return element
+    else
+      element = element.parentElement
+
+  return null
+
+elementIsAllContent = (element) ->
+  maybeBody = element.parentElement
+  return (
+    maybeBody? &&
+    hasTagName(maybeBody, 'body') &&
+    maybeBody.childNodes.length == 1
+  )
+
+isTextNodeWrappedInSpan = (textNode) ->
+  parentElement = textNode.parentElement
+
+  return (
+    parentElement? &&
+    hasTagName(parentElement, 'span') &&
+    parentElement.childNodes.length  == 1
+  )
 
 BREAK_TAG_REGEX = new RegExp('<br\\s*[/]?>', 'gi')
 
@@ -176,7 +211,7 @@ findMicrosoftSplitter = (emailDocument) ->
   if splitterResult.length > 0
     splitterElement = splitterResult[0]
     # Outlook 2010
-    if splitterElement.parentElement? && splitterElement == splitterElement.parentElement.chilren[0]
+    if splitterElement.parentElement? && splitterElement == splitterElement.parentElement.children[0]
       splitterElement = splitterElement.parentElement
 
     return splitterElement
@@ -204,9 +239,18 @@ ensureTextNodeBetweenChildElements = (element) ->
   dom = element.ownerDocument
   currentNode = element.childNodes[0]
 
+  # This element has no children. Give it an empty text node.
+  if !currentNode
+    newTextNode = dom.createTextNode(' ')
+    element.appendChild(newTextNode)
+    return
+
   while currentNode.nextSibling
     # An element is followed by an element
     if currentNode.nodeType == 1 && currentNode.nextSibling.nodeType == 1
       newTextNode = dom.createTextNode(' ');
       element.insertBefore(newTextNode, currentNode.nextSibling)
     currentNode = currentNode.nextSibling
+
+hasTagName = (element, tagName) ->
+  return element.tagName.toLowerCase() == tagName
