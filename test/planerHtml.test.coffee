@@ -218,5 +218,3 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).to.exist
       expect(msgBody).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
-
-

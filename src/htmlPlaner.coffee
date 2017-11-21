@@ -198,26 +198,56 @@ exports.replaceBreakTagsWithLineFeeds = (emailDocument) ->
   currentHtml = emailDocument.body.innerHTML
   emailDocument.body.innerHTML = currentHtml.replace BREAK_TAG_REGEX, "\n"
 
+# Queries to find a splitter that's the only child of a single parent div
+# Usually represents the dividing line between messages in the Outlook html
+OUTLOOK_SPLITTER_QUERY_SELECTORS =
+  outlook2007: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
+  # TODO: Find out what version of Outlook
+  outlookNew: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
+  windowsMail: "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;']"
+
+# More complicated Xpath queries for versions of Outlook that don't use the dividing lines
+OUTLOOK_XPATH_SPLITTER_QUERIES =
+  outlook2003: "//div/div[@class='MsoNormal' and @align='center' and @style='text-align:center']/font/span/hr[@size='3' and @width='100%' and @align='center' and @tabindex='-1']"
+
+# For more modern versions of Outlook that contain replies in quote block with an id
+OUTLOOK_SPLITTER_QUOTE_IDS =
+  # There's potentially multiple elements with this id so we need to cut everything after this quote as well
+  outlookForAndroid: '#divRplyFwdMsg'
+
 findMicrosoftSplitter = (emailDocument) ->
-  # Outlook 2007, 2010
-  query = "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
-  splitterResult = emailDocument.querySelectorAll(query)
+  possibleSplitterElements = []
 
-  if splitterResult.length == 0
-    # Windows mail
-    query = "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;']"
-    splitterResult = emailDocument.querySelectorAll(query)
+  for _, querySelector of OUTLOOK_SPLITTER_QUERY_SELECTORS
+    if (splitterElement = findOutlookSplitterWithQuerySelector(emailDocument, querySelector))
+      possibleSplitterElements.push splitterElement
 
-  if splitterResult.length > 0
-    splitterElement = splitterResult[0]
-    # Outlook 2010
-    if splitterElement.parentElement? && splitterElement == splitterElement.parentElement.children[0]
-      splitterElement = splitterElement.parentElement
+  for _, xpathQuery of OUTLOOK_XPATH_SPLITTER_QUERIES
+    if (splitterElement = findOutlookSplitterWithXpathQuery(emailDocument, xpathQuery))
+      possibleSplitterElements.push splitterElement
 
-    return splitterElement
+  for _, quoteId of OUTLOOK_SPLITTER_QUOTE_IDS
+    if (splitterElement = findOutlookSplitterWithQuoteId(emailDocument, quoteId))
+      possibleSplitterElements.push splitterElement
 
-  # Outlook 2003
-  xpathQuery = "//div/div[@class='MsoNormal' and @align='center' and @style='text-align:center']/font/span/hr[@size='3' and @width='100%' and @align='center' and @tabindex='-1']"
+  return null unless possibleSplitterElements.length
+  # Find the earliest splitter in the DOM to remove everything after it
+  earliestThing = possibleSplitterElements.sort(compareByDomPosition)[0]
+  return possibleSplitterElements.sort(compareByDomPosition)[0]
+
+DOCUMENT_POSITION_PRECEDING = 2
+DOCUMENT_POSITION_FOLLOWING = 4
+
+compareByDomPosition = (elementA, elementB) ->
+  documentPositionComparison = elementA.compareDocumentPosition(elementB)
+  if (documentPositionComparison & DOCUMENT_POSITION_PRECEDING)
+    return 1
+  else if (documentPositionComparison & DOCUMENT_POSITION_FOLLOWING)
+    return -1
+
+  return 0
+
+findOutlookSplitterWithXpathQuery = (emailDocument, xpathQuery) ->
   xpathResult = emailDocument.evaluate(xpathQuery, emailDocument, null, 9, null)
   splitterElement = xpathResult.singleNodeValue
 
@@ -228,7 +258,23 @@ findMicrosoftSplitter = (emailDocument) ->
 
   return splitterElement
 
-#  //div/div[@class='MsoNormal' and @align='center' and @style='text-align:center']/font/span/hr[@size='3' and @width='100%' and @align='center' and @tabindex='-1']"
+findOutlookSplitterWithQuerySelector = (emailDocument, query) ->
+  splitterResult = emailDocument.querySelectorAll(query)
+
+  return unless splitterResult.length > 1
+
+  splitterElement = splitterResult[1]
+
+  if splitterElement.parentElement? && splitterElement == splitterElement.parentElement.children[0]
+    splitterElement = splitterElement.parentElement
+
+  return splitterElement
+
+findOutlookSplitterWithQuoteId = (emailDocument, id) ->
+  splitterResult = emailDocument.querySelectorAll(id)
+
+  return unless splitterResult.length
+  return splitterResult[0]
 
 removeNodes = (nodesArray) ->
   for index in [nodesArray.length - 1..0]
