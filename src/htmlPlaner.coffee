@@ -202,8 +202,7 @@ exports.replaceBreakTagsWithLineFeeds = (emailDocument) ->
 # Usually represents the dividing line between messages in the Outlook html
 OUTLOOK_SPLITTER_QUERY_SELECTORS =
   outlook2007: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
-  # TODO: Find out what version of Outlook
-  outlookNew: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
+  outlookForAndroid: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
   windowsMail: "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;']"
 
 # More complicated Xpath queries for versions of Outlook that don't use the dividing lines
@@ -213,7 +212,7 @@ OUTLOOK_XPATH_SPLITTER_QUERIES =
 # For more modern versions of Outlook that contain replies in quote block with an id
 OUTLOOK_SPLITTER_QUOTE_IDS =
   # There's potentially multiple elements with this id so we need to cut everything after this quote as well
-  outlookForAndroid: '#divRplyFwdMsg'
+  office365: '#divRplyFwdMsg'
 
 findMicrosoftSplitter = (emailDocument) ->
   possibleSplitterElements = []

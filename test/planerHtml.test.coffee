@@ -218,3 +218,11 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).to.exist
       expect(msgBody).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from Office 365', ->
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/office-365.html'), 'utf8')
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
