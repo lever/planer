@@ -231,7 +231,6 @@ findMicrosoftSplitter = (emailDocument) ->
 
   return null unless possibleSplitterElements.length
   # Find the earliest splitter in the DOM to remove everything after it
-  earliestThing = possibleSplitterElements.sort(compareByDomPosition)[0]
   return possibleSplitterElements.sort(compareByDomPosition)[0]
 
 DOCUMENT_POSITION_PRECEDING = 2
