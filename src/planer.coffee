@@ -77,6 +77,10 @@ exports.extractFromHtml = (msgBody, dom) ->
   [msgBody, crlfReplaced] = _CRLF_to_LF msgBody
   emailDocument = htmlPlaner.createEmailDocument msgBody, dom
 
+  # TODO: this check does not handle cases of emails between various email providers well because
+  # it will find whichever splitter comes first in this list, not necessarily the top-most and stop
+  # checking for others. Possible solution is to use something like compareByDomPosition from htmlPlaner
+  # to find the earliest splitter in the DOM.
   haveCutQuotations = (
     htmlPlaner.cutGmailQuote(emailDocument) ||
     htmlPlaner.cutBlockQuote(emailDocument) ||
