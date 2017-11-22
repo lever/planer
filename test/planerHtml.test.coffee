@@ -216,13 +216,34 @@ describe 'planer#extractFromHtml', ->
       extractedHtml = planer.extractFromHtml(msgBody, @dom)
 
       expect(extractedHtml).to.exist
-      expect(msgBody).to.contain(replySnippet)
+      expect(extractedHtml).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
 
     it 'handles emails from Office 365', ->
+      replySnippet = "I really hope that you're doing well!"
+      originalMsgSnippet = 'Do you like the holidays?'
 
       msgBody = fs.readFileSync(absolutePath('examples/html/office-365.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
 
       extractedHtml = planer.extractFromHtml(msgBody, @dom)
 
       expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from various Outlook versions', ->
+      replySnippet = 'This is how it looks on my emails'
+      originalMsgSnippet = "We'd love to set up a quick phone call with you"
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/outlook-mixed.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
