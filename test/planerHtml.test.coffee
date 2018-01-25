@@ -10,7 +10,7 @@ describe 'planer#extractFromHtml', ->
       FetchExternalResources: false,
       ProcessExternalResources: false
     }
-    @dom = jsdom.jsdom('')
+    @dom = new jsdom.JSDOM().window.document
 
   it 'should return an empty body when given an empty body', ->
     msgBody = ''
