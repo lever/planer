@@ -275,11 +275,17 @@ preprocess = (msgBody, delimiter, contentType = 'text/plain') ->
 postprocess = (msgBody) ->
   return msgBody.replace(REGEXES.NORMALIZED_LINK, '<$1>').trim()
 
-
+CONTENT_CHUNK_SIZE = 100
 getDelimiter = (msgBody) ->
-  delmiterMatch = REGEXES.DELIMITER.exec(msgBody)
-  if delmiterMatch
-    return delmiterMatch[0]
+  contentLength = msgBody.length
+  currentIndex = 0
+  bodyChunk = msgBody.substr(currentIndex, CONTENT_CHUNK_SIZE)
+  while !(delimiterMatch = REGEXES.DELIMITER.exec(bodyChunk)) && currentIndex < contentLength
+    currentIndex += CONTENT_CHUNK_SIZE
+    bodyChunk = msgBody.substr(currentIndex, CONTENT_CHUNK_SIZE)
+
+  if delimiterMatch
+    return delimiterMatch[0]
   else
     return "\n"
 
