@@ -3,6 +3,7 @@ REGEXES = require './regexes'
 
 SPLITTER_MAX_LINES = 4
 MAX_LINES_COUNT = 1000
+MAX_LINE_LENGTH = 200000
 
 # Extract actual message from email.
 #
@@ -178,6 +179,7 @@ exports.markMessageLines = (lines) ->
 
 # Check the line for each splitter regex.
 isSplitter = (line) ->
+  return null if line.length > MAX_LINE_LENGTH
   for pattern in REGEXES.SPLITTER_PATTERNS
     matchArray = pattern.exec line
     if matchArray && matchArray.index == 0
@@ -260,7 +262,7 @@ preprocess = (msgBody, delimiter, contentType = 'text/plain') ->
     else
       return "@@#{ groupMatch1 }@@"
 
-  if contentType == 'text/plain'
+  if contentType == 'text/plain' && msgBody.length < MAX_LINE_LENGTH
     # ON_DATE_SMB_WROTE has 4 captured groups
     msgBody = msgBody.replace REGEXES.ON_DATE_SMB_WROTE, (entireMatch, groupMatch1, groupMatch2, groupMatch3, groupMatch4, matchIndex) ->
       if matchIndex && msgBody[matchIndex - 1] != "\n"
@@ -275,11 +277,17 @@ preprocess = (msgBody, delimiter, contentType = 'text/plain') ->
 postprocess = (msgBody) ->
   return msgBody.replace(REGEXES.NORMALIZED_LINK, '<$1>').trim()
 
-
+CONTENT_CHUNK_SIZE = 100
 getDelimiter = (msgBody) ->
-  delmiterMatch = REGEXES.DELIMITER.exec(msgBody)
-  if delmiterMatch
-    return delmiterMatch[0]
+  contentLength = msgBody.length
+  currentIndex = 0
+  bodyChunk = msgBody.substr(currentIndex, CONTENT_CHUNK_SIZE)
+  while !(delimiterMatch = REGEXES.DELIMITER.exec(bodyChunk)) && currentIndex < contentLength
+    currentIndex += CONTENT_CHUNK_SIZE
+    bodyChunk = msgBody.substr(currentIndex, CONTENT_CHUNK_SIZE)
+
+  if delimiterMatch
+    return delimiterMatch[0]
   else
     return "\n"
 
