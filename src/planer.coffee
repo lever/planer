@@ -1,6 +1,10 @@
 htmlPlaner = require './htmlPlaner'
 REGEXES = require './regexes'
 
+# Import debug module to help in development work
+debug = require('debug')('planer')
+options = {}
+
 SPLITTER_MAX_LINES = 4
 MAX_LINES_COUNT = 1000
 MAX_LINE_LENGTH = 200000
@@ -13,11 +17,11 @@ MAX_LINE_LENGTH = 200000
 # @param contentType [String] the contentType of the email. Only `text/plain` and `text/html` are supported.
 # @param dom [Document] the document object to use for html parsing.
 # @return [String] the text/html of the actual message without quotations
-exports.extractFrom = (msgBody, contentType= 'text/plain', dom = null) ->
+exports.extractFrom = (msgBody, contentType= 'text/plain', dom = null, opts = {}) ->
   if contentType == 'text/plain'
-    return exports.extractFromPlain msgBody
+    return exports.extractFromPlain msgBody, opts
   else if contentType == 'text/html'
-    return exports.extractFromHtml msgBody, dom
+    return exports.extractFromHtml msgBody, dom, opts
   else
     console.warn('Unknown contentType', contentType)
 
@@ -34,12 +38,14 @@ exports.extractFrom = (msgBody, contentType= 'text/plain', dom = null) ->
 #
 # @param msgBody [String] the html content of the email
 # @return [String] the text of the message without quotations
-exports.extractFromPlain = (msgBody) ->
+exports.extractFromPlain = (msgBody, opts = {}) ->
+  options = opts
   delimiter = getDelimiter msgBody
   msgBody = preprocess msgBody, delimiter
 
   lines = msgBody.split delimiter, MAX_LINES_COUNT
   markers = exports.markMessageLines lines
+  debug "Line markers", markers
   lines = exports.processMarkedLines lines, markers
 
   msgBody = lines.join delimiter
@@ -67,7 +73,8 @@ exports.extractFromPlain = (msgBody) ->
 # @param dom [Document] a document object or equivalent implementation.
 #   Must respond to `DOMImplementation.createHTMLDocument()`.
 #   @see https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument
-exports.extractFromHtml = (msgBody, dom) ->
+exports.extractFromHtml = (msgBody, dom, opts = {}) ->
+  options = opts
   unless dom?
     console.error("No dom provided to parse html.")
     return msgBody
@@ -204,6 +211,7 @@ exports.processMarkedLines = (lines, markers, returnFlags = {}) ->
   # If the message is a forward do nothing.
   if /^[te]*f/.test(markers)
     setReturnFlags returnFlags, false, -1, -1
+    debug "Forwarded message - do nothing"
     return lines
 
   # Find inline replies (tm's following the first m in markers string)
@@ -217,14 +225,16 @@ exports.processMarkedLines = (lines, markers, returnFlags = {}) ->
         (REGEXES.PARENTHESIS_LINK.test(lines[inlineReplyIndex - 1]) ||
          lines[inlineReplyIndex].trim().search(REGEXES.PARENTHESIS_LINK) == 0)
 
-    if !isInlineReplyLink
+    if !options.stopAtSplitter && !isInlineReplyLink
       setReturnFlags returnFlags, false, -1, -1
+      debug "Found text after splitter, returning eveything"
       return lines
 
   # Cut out text lines coming after splitter if there are no markers there
   quotationMatch = new RegExp('(se*)+((t|f)+e*)+', 'g').exec(markers)
   if quotationMatch
     setReturnFlags returnFlags, true, quotationMatch.index, lines.length
+    debug "Removing lines after splitter"
     return lines.slice(0, quotationMatch.index)
 
   # Handle the case with markers
@@ -232,9 +242,11 @@ exports.processMarkedLines = (lines, markers, returnFlags = {}) ->
   if quotationMatch
     quotationEnd = quotationMatch.index + quotationMatch[1].length
     setReturnFlags returnFlags, true, quotationMatch.index, quotationEnd
+    debug "Removing lines after splitter"
     return lines.slice(0, quotationMatch.index).concat(lines.slice(quotationEnd))
 
   setReturnFlags returnFlags, false, -1, -1
+  debug "Defaulting to return everything"
   return lines
 
 setReturnFlags = (returnFlags, wereLinesDeleted, firstLine, lastLine) ->
