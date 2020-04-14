@@ -247,7 +247,7 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
 
 
-    it 'handles emails from Office 2010 American', ->
+    it 'handles emails from Office 2007/2010 American', ->
       replySnippet = "OK by me"
       originalMsgSnippet = 'further revised'
 
@@ -261,7 +261,7 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
 
-    it 'handles emails from Office 2010 International', ->
+    it 'handles emails from Office 2007/2010 International', ->
       replySnippet = "OK by me"
       originalMsgSnippet = 'further revised'
 
