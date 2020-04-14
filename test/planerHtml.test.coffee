@@ -234,7 +234,7 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
 
     it 'handles emails from various Outlook versions', ->
-      replySnippet = 'This is how it looks on my emails'
+      replySnippet = 'We can talk tomorrow.'
       originalMsgSnippet = "We'd love to set up a quick phone call with you"
 
       msgBody = fs.readFileSync(absolutePath('examples/html/outlook-mixed.html'), 'utf8')
