@@ -258,10 +258,9 @@ findOutlookSplitterWithXpathQuery = (emailDocument, xpathQuery) ->
 
 findOutlookSplitterWithQuerySelector = (emailDocument, query) ->
   splitterResult = emailDocument.querySelectorAll(query)
+  return unless splitterResult.length > 0
 
-  return unless splitterResult.length > 1
-
-  splitterElement = splitterResult[1]
+  splitterElement = splitterResult[0]
 
   if splitterElement.parentElement? && splitterElement == splitterElement.parentElement.children[0]
     splitterElement = splitterElement.parentElement
