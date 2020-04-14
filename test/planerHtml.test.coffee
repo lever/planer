@@ -302,3 +302,17 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).to.exist
       expect(extractedHtml).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from Apple iOS Mail', ->
+      replySnippet = "html reply"
+      originalMsgSnippet = 'original message from GMail'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/iosMail.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
