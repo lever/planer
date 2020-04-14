@@ -7,7 +7,8 @@
     "registry": "http://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "mocha test/",
+    "test": "mocha --reporter spec --require coffeescript/register \"test/**/*.{js,coffee}\"",
+    "debug": "mocha --inspect-brk --reporter spec --require coffeescript/register \"test/**/*.{js,coffee}\"",
     "compile": "coffee -o lib -c src"
   },
   "repository": {
@@ -30,6 +31,6 @@
     "chai": "^4.2.0",
     "coffeescript": "^2.5.1",
     "jsdom": "^16.2.2",
-    "mocha": "^5.2.0"
+    "mocha": "^6.2.3"
   }
 }
