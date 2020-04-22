@@ -316,3 +316,17 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).to.exist
       expect(extractedHtml).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+
+    it 'handles emails reply chains involving multiple email clients', ->
+      replySnippet = "Here is the answer"
+      originalMsgSnippet = 'I am having trouble'
+      msgBody = fs.readFileSync(absolutePath('examples/html/mixedEmailClientReplyChain.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
