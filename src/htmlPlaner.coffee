@@ -200,12 +200,13 @@ exports.replaceBreakTagsWithLineFeeds = (emailDocument) ->
 
 # Queries to find a splitter that's the only child of a single parent div
 # Usually represents the dividing line between messages in the Outlook html
+# using case-insensitive modifier "i" at the end of each selector since the color hex color has been seen lowercased in some outlook emails
 OUTLOOK_SPLITTER_QUERY_SELECTORS =
-  outlook2007and2010International: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
-  outlook2007and2010American: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0in 0in 0in']"
-  outlook2013_2016_2019International: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
-  outlook2013_2016_2019American: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in']"
-  windowsMail: "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;']"
+  outlook2007and2010International: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm' i]"
+  outlook2007and2010American: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0in 0in 0in' i]"
+  outlook2013_2016_2019International: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm' i]"
+  outlook2013_2016_2019American: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in' i]"
+  windowsMail: "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;' i]"
 
 # More complicated Xpath queries for versions of Outlook that don't use the dividing lines
 OUTLOOK_XPATH_SPLITTER_QUERIES =
