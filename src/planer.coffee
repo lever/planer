@@ -78,16 +78,20 @@ exports.extractFromHtml = (msgBody, dom) ->
   [msgBody, crlfReplaced] = _CRLF_to_LF msgBody
   emailDocument = htmlPlaner.createEmailDocument msgBody, dom
 
-  # TODO: this check does not handle cases of emails between various email providers well because
-  # it will find whichever splitter comes first in this list, not necessarily the top-most and stop
-  # checking for others. Possible solution is to use something like compareByDomPosition from htmlPlaner
-  # to find the earliest splitter in the DOM.
+  # handle cases of emails between various email providers by running all checks instead of
+  # stopping at whichever check returns positive first
+  haveCutQuotationsGMail = htmlPlaner.cutGmailQuote(emailDocument)
+  haveCutQuotationsBlock = htmlPlaner.cutBlockQuote(emailDocument)
+  haveCutQuotationsMicrosoft = htmlPlaner.cutMicrosoftQuote(emailDocument)
+  haveCutQuotationsById = htmlPlaner.cutById(emailDocument)
+  haveCutQuotationsFromBlock = htmlPlaner.cutFromBlock(emailDocument)
+  
   haveCutQuotations = (
-    htmlPlaner.cutGmailQuote(emailDocument) ||
-    htmlPlaner.cutBlockQuote(emailDocument) ||
-    htmlPlaner.cutMicrosoftQuote(emailDocument) ||
-    htmlPlaner.cutById(emailDocument) ||
-    htmlPlaner.cutFromBlock(emailDocument)
+      haveCutQuotationsGMail ||
+      haveCutQuotationsBlock ||
+      haveCutQuotationsMicrosoft ||
+      haveCutQuotationsById ||
+      haveCutQuotationsFromBlock
   )
 
   # Create unaltered copy of email document
