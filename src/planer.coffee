@@ -81,6 +81,7 @@ exports.extractFromHtml = (msgBody, dom) ->
   # handle cases of emails between various email providers by running all checks instead of
   # stopping at whichever check returns positive first
   haveCutQuotationsGMail = htmlPlaner.cutGmailQuote(emailDocument)
+  haveCutQuotationsYahoo = htmlPlaner.cutYahooQuote(emailDocument)
   haveCutQuotationsBlock = htmlPlaner.cutBlockQuote(emailDocument)
   haveCutQuotationsMicrosoft = htmlPlaner.cutMicrosoftQuote(emailDocument)
   haveCutQuotationsById = htmlPlaner.cutById(emailDocument)
@@ -88,6 +89,7 @@ exports.extractFromHtml = (msgBody, dom) ->
   
   haveCutQuotations = (
       haveCutQuotationsGMail ||
+      haveCutQuotationsYahoo ||
       haveCutQuotationsBlock ||
       haveCutQuotationsMicrosoft ||
       haveCutQuotationsById ||

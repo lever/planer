@@ -86,6 +86,13 @@ exports.cutGmailQuote = (emailDocument) ->
   removeNodes(nodesArray)
   return true
 
+exports.cutYahooQuote = (emailDocument) ->
+  nodesArray = emailDocument.getElementsByClassName('yahoo_quoted')
+  return false unless nodesArray.length > 0
+
+  removeNodes(nodesArray)
+  return true
+
 exports.cutMicrosoftQuote = (emailDocument) ->
   splitterElement = findMicrosoftSplitter(emailDocument)
   return false unless splitterElement?
