@@ -7,8 +7,15 @@
     "registry": "http://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "mocha test/",
-    "compile": "coffee -o lib -c src"
+    "test": "make test",
+    "compile": "coffee -o lib -c src",
+    "lint": "gts check",
+    "clean": "./node_modules/lever-ts-dev/scripts/clean.sh",
+    "compile-coffee": "find . -name '*.coffee' | perl -ne '/node_modules\\/(?!(l-|lever-))/ || /\\/test\\// || print' | xargs -n300 -P8 coffee -bc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -29,7 +36,19 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "coffee-script": "^1.10.0",
+    "coffeescript": "git+ssh://git@github.com/lever/coffeescript.git#coffee1-source-map-support",
     "jsdom": "^11.6.0",
-    "mocha": "^2.3.4"
-  }
+    "lever-ts-dev": "^3.6.0",
+    "lever-test": "^11.15.0"
+  },
+  "files": [
+    "**/*.coffee",
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.js",
+    "**/*.js.map",
+    "!prettier.config.js",
+    "!.git/**",
+    "!test/**"
+  ]
 }

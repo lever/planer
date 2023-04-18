@@ -1,0 +1,6 @@
+{
+  "extends": "./node_modules/lever-ts-dev/.eslintrc.json",
+  "parserOptions":{
+    "project": ["./tsconfig.json", "./test/tsconfig.json"]
+  }
+}

@@ -13,3 +13,12 @@ pids
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+
+# Compiler output
+*.d.ts
+*.js
+*.js.map
+*.tsbuildinfo
+# Whitelist any *.d.ts files under types/
+!types/**/*.d.ts
+!prettier.config.js

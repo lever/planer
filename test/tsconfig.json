@@ -1,0 +1,7 @@
+{
+  "extends": "lever-ts-dev/tsconfig-lever.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["**/*.ts"]
+}
