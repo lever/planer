@@ -2,7 +2,7 @@
 fs = require 'fs'
 jsdom = require 'jsdom'
 path = require 'path'
-planer = require '../src/planer'
+planer = require '../../src/planer'
 
 describe 'planer#extractFromHtml', ->
   before 'configure jsdom', ->

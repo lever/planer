@@ -1,5 +1,5 @@
 {expect} = require 'chai'
-planer = require '../src/planer'
+planer = require '../../src/planer'
 
 describe 'planer#extractFromPlain', ->
   it 'should return a the test of a simple message', ->
