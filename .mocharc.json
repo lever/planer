@@ -1,7 +1,7 @@
 {
-  "extension": "ts,coffee",
+  "extension": "ts",
   "exclude": "test/**/*.d.ts",
-  "require": "node_modules/ts-node/register,node_modules/coffeescript/register",
+  "require": "node_modules/ts-node/register",
   "reporter": "spec",
   "recursive": true
 }

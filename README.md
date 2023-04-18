@@ -39,7 +39,6 @@ console.log(actualMessage) # "<html><body>Reply!\n</body></html>";
 # Contributing
 
 Contributions are of course encouraged.
-Keep in mind that the source is the `coffee` files; the `js` files in `/lib` are kept around for convenience.
 
 Write tests for any new functionality.
 Run `npm run compile` to compile the source into javascript files before submitting a pull request.

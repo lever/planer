@@ -1,13 +1,9 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS202: Simplify dynamic range loops
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-const htmlPlaner = require('./htmlPlaner');
-const REGEXES = require('./regexes');
+/* eslint-disable no-control-regex */
+
+import { $TSFixMeFromCoffee } from '../types/planer';
+
+import htmlPlaner = require('./htmlPlaner');
+import REGEXES = require('./regexes');
 
 const SPLITTER_MAX_LINES = 4;
 const MAX_LINES_COUNT = 1000;
@@ -24,9 +20,7 @@ const MAX_LINE_LENGTH = 200000;
  * @return [String] the text/html of the actual message without quotations
  */
 export function extractFrom(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   msgBody: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   contentType: $TSFixMeFromCoffee,
   dom = null
 ) {
@@ -57,7 +51,6 @@ export function extractFrom(
  * @param msgBody [String] the html content of the email
  * @return [String] the text of the message without quotations
  */
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function extractFromPlain(msgBody: $TSFixMeFromCoffee) {
   const delimiter = getDelimiter(msgBody);
   // @ts-expect-error TS(2554): Expected 3 arguments, but got 2.
@@ -95,7 +88,6 @@ export function extractFromPlain(msgBody: $TSFixMeFromCoffee) {
  *   Must respond to `DOMImplementation.createHTMLDocument()`.
  *   @see https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument
  */
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function extractFromHtml(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCoffee) {
   let crlfReplaced;
   if (dom == null) {
@@ -129,6 +121,7 @@ export function extractFromHtml(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCo
 
   // Add checkpoints to html document
   const numberOfCheckpoints = htmlPlaner.addCheckpoints(emailDocument.body, 0);
+  // eslint-disable-next-line prefer-spread
   const quotationCheckpoints = Array.apply(null, Array(numberOfCheckpoints)).map(() => false);
 
   // Get plain text version to put through plain text algorithm
@@ -146,14 +139,12 @@ export function extractFromHtml(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCo
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index];
     const matches = line.match(htmlPlaner.CHECKPOINT_PATTERN) || [];
-    // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
     lineCheckpoints[index] = matches.map((match: $TSFixMeFromCoffee) =>
       parseInt(match.slice(4, -4))
     );
   }
 
   // Remove checkpoints from lines to pass through plain text algorithm
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   lines = lines.map((line: $TSFixMeFromCoffee) => line.replace(htmlPlaner.CHECKPOINT_PATTERN, ''));
 
   const markers = exports.markMessageLines(lines);
@@ -161,7 +152,6 @@ export function extractFromHtml(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCo
   exports.processMarkedLines(lines, markers, returnFlags);
 
   // No lines deleted by plain text algorithm, ready to return
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   if (!(returnFlags as $TSFixMeFromCoffee).wereLinesDeleted) {
     if (haveCutQuotations) {
       // If we cut a quotation element out of the html, return the html output of the copied document.
@@ -174,11 +164,8 @@ export function extractFromHtml(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCo
 
   // Set quotationCheckpoints to true for checkpoints on lines that were removed
   for (
-    // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
     let i = (returnFlags as $TSFixMeFromCoffee).firstLine,
-      // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
       end = (returnFlags as $TSFixMeFromCoffee).lastLine,
-      // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
       asc = (returnFlags as $TSFixMeFromCoffee).firstLine <= end;
     asc ? i <= end : i >= end;
     asc ? i++ : i--
@@ -212,7 +199,6 @@ export function extractFromHtml(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCo
  *    'tsem'
  *
  */
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function markMessageLines(lines: $TSFixMeFromCoffee) {
   const markers = [];
   let i = 0;
@@ -248,13 +234,11 @@ export function markMessageLines(lines: $TSFixMeFromCoffee) {
   return markers.join('');
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function isSplitter(line: $TSFixMeFromCoffee) {
   if (line.length > MAX_LINE_LENGTH) {
     return null;
   }
   for (const pattern of Array.from(REGEXES.SPLITTER_PATTERNS)) {
-    // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
     const matchArray = (pattern as $TSFixMeFromCoffee).exec(line);
     if (matchArray && matchArray.index === 0) {
       return matchArray;
@@ -276,11 +260,8 @@ function isSplitter(line: $TSFixMeFromCoffee) {
  * @see setReturnFlags
  */
 export function processMarkedLines(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   lines: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   markers: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   returnFlags: $TSFixMeFromCoffee
 ) {
   // If there are no splitters there should be no markers
@@ -336,13 +317,9 @@ export function processMarkedLines(
 }
 
 function setReturnFlags(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   returnFlags: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   wereLinesDeleted: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   firstLine: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   lastLine: $TSFixMeFromCoffee
 ) {
   returnFlags.wereLinesDeleted = wereLinesDeleted;
@@ -351,11 +328,8 @@ function setReturnFlags(
 }
 
 function preprocess(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   msgBody: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   delimiter: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   contentType: $TSFixMeFromCoffee
 ) {
   // Normalize links i.e. replace '<', '>' wrapping the link with some symbols
@@ -368,11 +342,8 @@ function preprocess(
   msgBody = msgBody.replace(
     REGEXES.LINK,
     (
-      // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
       entireMatch: $TSFixMeFromCoffee,
-      // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
       groupMatch1: $TSFixMeFromCoffee,
-      // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
       matchIndex: $TSFixMeFromCoffee
     ) => {
       // Look for closest newline character
@@ -391,17 +362,11 @@ function preprocess(
     msgBody = msgBody.replace(
       REGEXES.ON_DATE_SMB_WROTE,
       (
-        // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
         entireMatch: $TSFixMeFromCoffee,
-        // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
         groupMatch1: $TSFixMeFromCoffee,
-        // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
         groupMatch2: $TSFixMeFromCoffee,
-        // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
         groupMatch3: $TSFixMeFromCoffee,
-        // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
         groupMatch4: $TSFixMeFromCoffee,
-        // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
         matchIndex: $TSFixMeFromCoffee
       ) => {
         if (matchIndex && msgBody[matchIndex - 1] !== '\n') {
@@ -416,14 +381,12 @@ function preprocess(
   return msgBody;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function postprocess(msgBody: $TSFixMeFromCoffee) {
   return msgBody.replace(REGEXES.NORMALIZED_LINK, '<$1>').trim();
 }
 
 const CONTENT_CHUNK_SIZE = 100;
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function getDelimiter(msgBody: $TSFixMeFromCoffee) {
   let delimiterMatch;
   const contentLength = msgBody.length;
@@ -441,7 +404,6 @@ function getDelimiter(msgBody: $TSFixMeFromCoffee) {
   }
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function _CRLF_to_LF(msgBody: $TSFixMeFromCoffee) {
   const delimiter = getDelimiter(msgBody);
   if (delimiter === '\r\n') {
@@ -450,7 +412,6 @@ function _CRLF_to_LF(msgBody: $TSFixMeFromCoffee) {
   return [msgBody, false];
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function _restore_CRLF(msgBody: $TSFixMeFromCoffee, replaced: $TSFixMeFromCoffee) {
   if (replaced == null) {
     replaced = true;

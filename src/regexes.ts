@@ -1,3 +1,5 @@
+/* eslint-disable no-control-regex */
+
 export const DELIMITER = new RegExp('\r?\n');
 export const FWD = new RegExp('^[-]+[ ]*Forwarded message[ ]*[-]+$', 'im');
 

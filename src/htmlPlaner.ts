@@ -1,12 +1,5 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS202: Simplify dynamic range loops
- * DS205: Consider reworking code to avoid use of IIFEs
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+import { $TSFixMeFromCoffee } from '../types/planer';
+
 const CHECKPOINT_PREFIX = '#!%!';
 const CHECKPOINT_SUFFIX = '!%!#';
 export const CHECKPOINT_PATTERN = new RegExp(`${CHECKPOINT_PREFIX}\\d+${CHECKPOINT_SUFFIX}`, 'g');
@@ -15,13 +8,11 @@ export const CHECKPOINT_PATTERN = new RegExp(`${CHECKPOINT_PREFIX}\\d+${CHECKPOI
 const QUOTE_IDS = ['OLK_SRC_BODY_SECTION'];
 
 /** Create an instance of Document using the message html and the injected base document */
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function createEmailDocument(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFromCoffee) {
   const emailDocument = dom.implementation.createHTMLDocument();
 
   // Write html of email to `html` element
   const [htmlElement] = Array.from(emailDocument.getElementsByTagName('html'));
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   (htmlElement as $TSFixMeFromCoffee).innerHTML = msgBody.trim();
 
   // Get the body element (will be created if not in the supplied html) and assign it to document.body for ease of use
@@ -41,7 +32,6 @@ export function createEmailDocument(msgBody: $TSFixMeFromCoffee, dom: $TSFixMeFr
 }
 
 /** Recursively adds checkpoints to html tree. */
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function addCheckpoints(htmlNode: $TSFixMeFromCoffee, counter: $TSFixMeFromCoffee) {
   // 3 is a text node
   if (htmlNode.nodeType === 3) {
@@ -66,11 +56,8 @@ export function addCheckpoints(htmlNode: $TSFixMeFromCoffee, counter: $TSFixMeFr
 }
 
 export function deleteQuotationTags(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   htmlNode: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   counter: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   quotationCheckpoints: $TSFixMeFromCoffee
 ) {
   let childNode, quotationChildren;
@@ -123,7 +110,6 @@ export function deleteQuotationTags(
   }
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function cutGmailQuote(emailDocument: $TSFixMeFromCoffee) {
   const nodesArray = emailDocument.getElementsByClassName('gmail_quote');
   if (!(nodesArray.length > 0)) {
@@ -134,7 +120,6 @@ export function cutGmailQuote(emailDocument: $TSFixMeFromCoffee) {
   return true;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function cutMicrosoftQuote(emailDocument: $TSFixMeFromCoffee) {
   const splitterElement = findMicrosoftSplitter(emailDocument);
   if (splitterElement == null) {
@@ -153,7 +138,6 @@ export function cutMicrosoftQuote(emailDocument: $TSFixMeFromCoffee) {
 }
 
 /** Remove the last non-nested blockquote element */
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function cutBlockQuote(emailDocument: $TSFixMeFromCoffee) {
   const xpathQuery = '(.//blockquote)[not(ancestor::blockquote)][last()]';
   const xpathResult = emailDocument.evaluate(xpathQuery, emailDocument, null, 9, null);
@@ -163,14 +147,11 @@ export function cutBlockQuote(emailDocument: $TSFixMeFromCoffee) {
     return false;
   }
 
-  const div = emailDocument.createElement('div');
-
   const parent = blockquoteElement.parentElement;
   parent.removeChild(blockquoteElement);
   return true;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function cutById(emailDocument: $TSFixMeFromCoffee) {
   let found = false;
   for (const quoteId of Array.from(QUOTE_IDS)) {
@@ -184,7 +165,6 @@ export function cutById(emailDocument: $TSFixMeFromCoffee) {
   return found;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function cutFromBlock(emailDocument: $TSFixMeFromCoffee) {
   // Handle case where From: block is enclosed in a tag
   let fromBlock;
@@ -240,7 +220,6 @@ export function cutFromBlock(emailDocument: $TSFixMeFromCoffee) {
   return true;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function findParentDiv(element: $TSFixMeFromCoffee) {
   while (element != null && element.parentElement != null) {
     if (hasTagName(element, 'div')) {
@@ -253,13 +232,11 @@ function findParentDiv(element: $TSFixMeFromCoffee) {
   return null;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function elementIsAllContent(element: $TSFixMeFromCoffee) {
   const maybeBody = element.parentElement;
   return maybeBody != null && hasTagName(maybeBody, 'body') && maybeBody.childNodes.length === 1;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function isTextNodeWrappedInSpan(textNode: $TSFixMeFromCoffee) {
   const { parentElement } = textNode;
 
@@ -272,7 +249,6 @@ function isTextNodeWrappedInSpan(textNode: $TSFixMeFromCoffee) {
 
 const BREAK_TAG_REGEX = new RegExp('<br\\s*[/]?>', 'gi');
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 export function replaceBreakTagsWithLineFeeds(emailDocument: $TSFixMeFromCoffee) {
   const currentHtml = emailDocument.body.innerHTML;
   return (emailDocument.body.innerHTML = currentHtml.replace(BREAK_TAG_REGEX, '\n'));
@@ -299,7 +275,6 @@ const OUTLOOK_SPLITTER_QUOTE_IDS =
   // There's potentially multiple elements with this id so we need to cut everything after this quote as well
   { office365: '#divRplyFwdMsg' };
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function findMicrosoftSplitter(emailDocument: $TSFixMeFromCoffee) {
   let _, splitterElement;
   const possibleSplitterElements = [];
@@ -338,7 +313,6 @@ function findMicrosoftSplitter(emailDocument: $TSFixMeFromCoffee) {
 const DOCUMENT_POSITION_PRECEDING = 2;
 const DOCUMENT_POSITION_FOLLOWING = 4;
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function compareByDomPosition(elementA: $TSFixMeFromCoffee, elementB: $TSFixMeFromCoffee) {
   const documentPositionComparison = elementA.compareDocumentPosition(elementB);
   if (documentPositionComparison & DOCUMENT_POSITION_PRECEDING) {
@@ -351,9 +325,7 @@ function compareByDomPosition(elementA: $TSFixMeFromCoffee, elementB: $TSFixMeFr
 }
 
 function findOutlookSplitterWithXpathQuery(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   emailDocument: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   xpathQuery: $TSFixMeFromCoffee
 ) {
   const xpathResult = emailDocument.evaluate(xpathQuery, emailDocument, null, 9, null);
@@ -369,9 +341,7 @@ function findOutlookSplitterWithXpathQuery(
 }
 
 function findOutlookSplitterWithQuerySelector(
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   emailDocument: $TSFixMeFromCoffee,
-  // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
   query: $TSFixMeFromCoffee
 ) {
   const splitterResult = emailDocument.querySelectorAll(query);
@@ -392,7 +362,6 @@ function findOutlookSplitterWithQuerySelector(
   return splitterElement;
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function findOutlookSplitterWithQuoteId(emailDocument: $TSFixMeFromCoffee, id: $TSFixMeFromCoffee) {
   const splitterResult = emailDocument.querySelectorAll(id);
 
@@ -402,7 +371,6 @@ function findOutlookSplitterWithQuoteId(emailDocument: $TSFixMeFromCoffee, id: $
   return splitterResult[0];
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function removeNodes(nodesArray: $TSFixMeFromCoffee) {
   return (() => {
     const result = [];
@@ -418,7 +386,6 @@ function removeNodes(nodesArray: $TSFixMeFromCoffee) {
   })();
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function ensureTextNodeBetweenChildElements(element: $TSFixMeFromCoffee) {
   let newTextNode;
   const dom = element.ownerDocument;
@@ -445,7 +412,6 @@ function ensureTextNodeBetweenChildElements(element: $TSFixMeFromCoffee) {
   })();
 }
 
-// @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
 function hasTagName(element: $TSFixMeFromCoffee, tagName: $TSFixMeFromCoffee) {
   return element.tagName.toLowerCase() === tagName;
 }

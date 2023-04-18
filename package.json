@@ -7,11 +7,12 @@
     "registry": "http://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "make test",
-    "compile": "coffee -o lib -c src",
+    "test": "./node_modules/lever-test/bin/tools/mocha ./test/unit/",
+    "compile": "tsc --build --verbose tsconfig.json",
+    "prelint": "npm run clean",
     "lint": "gts check",
     "clean": "./node_modules/lever-ts-dev/scripts/clean.sh",
-    "compile-coffee": "find . -name '*.coffee' | perl -ne '/node_modules\\/(?!(l-|lever-))/ || /\\/test\\// || print' | xargs -n300 -P8 coffee -bc",
+    "prefix": "npm run clean",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",

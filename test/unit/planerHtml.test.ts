@@ -1,3 +1,4 @@
+import { $TSFixMeFromCoffee } from '../../types/planer';
 import { expect } from 'chai';
 import fs from 'fs';
 import path from 'path';
@@ -221,7 +222,6 @@ text
   });
 
   describe('examples from files', () => {
-    // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
     function absolutePath(relativePath: $TSFixMeFromCoffee) {
       return path.join(__dirname, relativePath);
     }

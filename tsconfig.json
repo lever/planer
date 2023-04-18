@@ -1,8 +1,10 @@
 {
   "extends": "lever-ts-dev/tsconfig-lever.json",
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "lib"
   },
-  "include": ["**/*.ts"],
-  "exclude": ["test/**", "node_modules/**"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.d.ts"]
 }

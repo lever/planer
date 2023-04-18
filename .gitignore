@@ -15,6 +15,7 @@ pids
 node_modules
 
 # Compiler output
+lib
 *.d.ts
 *.js
 *.js.map
