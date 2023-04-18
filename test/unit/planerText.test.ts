@@ -1,17 +1,11 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-// @ts-expect-error TS(2451): Cannot redeclare block-scoped variable 'expect'.
-const { expect } = require('chai');
-// @ts-expect-error TS(2451): Cannot redeclare block-scoped variable 'planer'.
+import { expect } from 'chai';
+
 const planer = require('../../src/planer');
 
 describe('planer#extractFromPlain', () => {
   it('should return a the test of a simple message', () => {
     const msgBody = 'Oh, hai';
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Oh, hai');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Oh, hai');
   });
 
   it('understands the on-date-somebody-wrote splitter', () => {
@@ -23,13 +17,13 @@ On 11-Apr-2011, at 6:54 PM, Roman Tkachenko <romant@example.com> wrote:
 > Test
 >
 > Roman`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Test reply');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Test reply');
   });
 
   it('allows humans to use on to start a line', () => {
     const msgBody = `Blah-blah-blah
 On blah-blah-blah`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
   });
 
   it('Notices when real test is on the splitter line', () => {
@@ -46,7 +40,7 @@ bla-bla - bla--- On Wed, Apr 4, 2012 at 3:59 PM, me@domain.com wrote:
 > Hi`;
     const reply = `reply
 bla-bla - bla`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal(reply);
+    expect(planer.extractFromPlain(msgBody)).to.equal(reply);
   });
 
   it('picks up replies after the quotation', () => {
@@ -56,7 +50,7 @@ bla-bla - bla`;
 > Test
 Test reply`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Test reply');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Test reply');
   });
 
   it('detects wrapping replies', () => {
@@ -70,7 +64,7 @@ Regards, Roman`;
 
 Regards, Roman`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal(reply);
+    expect(planer.extractFromPlain(msgBody)).to.equal(reply);
   });
 
   it('detects wrapping of nested replies', () => {
@@ -90,7 +84,7 @@ Regards, Roman`;
 
 Regards, Roman`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal(reply);
+    expect(planer.extractFromPlain(msgBody)).to.equal(reply);
   });
 
   it('is not fooled by 2 line splitters', () => {
@@ -108,7 +102,7 @@ Regards, Roman`;
 
 Regards, Roman`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal(reply);
+    expect(planer.extractFromPlain(msgBody)).to.equal(reply);
   });
 
   it('not fooled by 3 line splitters', () => {
@@ -120,7 +114,7 @@ wrote:
 Test message\
 `;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Test reply');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Test reply');
   });
 
   it('works with brief quotes', () => {
@@ -129,7 +123,7 @@ On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
 > Hello`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
   });
 
   it('works with brief quotes', () => {
@@ -138,7 +132,7 @@ On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
 > Hello`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
   });
 
   it('is not fooled bt indents', () => {
@@ -148,7 +142,7 @@ On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
 
 Brunch mumblecore pug Marfa tofu, irure taxidermy hoodie readymade pariatur.\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal(
+    expect(planer.extractFromPlain(msgBody)).to.equal(
       'YOLO salvia cillum kogi typewriter mumblecore cardigan skateboard Austin.'
     );
   });
@@ -159,8 +153,8 @@ Brunch mumblecore pug Marfa tofu, irure taxidermy hoodie readymade pariatur.\
 On Tue, Jan 27, 2015 at 12:42 PM -0800, "Company" <christine.XXX@XXX.com> wrote:
 
 Hi Mark,
-Blah blah? 
-Thanks,Christine 
+Blah blah?
+Thanks,Christine
 
 On Jan 27, 2015, at 11:55 AM, Mark XXX <mark@XXX.com> wrote:
 
@@ -169,7 +163,7 @@ Mark
 
 Sent from Acompli`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Btw blah blah...');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Btw blah blah...');
   });
 
   it('does not barf on unicode characters in a name', () => {
@@ -178,7 +172,7 @@ Sent from Acompli`;
 
 >  Cool beans, scro`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Replying ok');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Replying ok');
   });
 
   it('understands the original message headers are not part of the reply', () => {
@@ -191,7 +185,7 @@ Subject: The manager has commented on your Loop
 
 Blah-blah-blah\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
   });
 
   it('understands the original message headers in German are not part of the reply', () => {
@@ -204,7 +198,7 @@ Betreff: The manager has commented on your Loop
 
 Blah-blah-blah\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
   });
 
   it('understands the original message headers in French are not part of the reply', () => {
@@ -217,7 +211,7 @@ Objet : Follow Up
 
 Blah-blah-blah\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
   });
 
   it('understands the original message headers in Danish are not part of the reply', () => {
@@ -230,7 +224,7 @@ Emne: The manager has commented on your Loop
 
 Blah-blah-blah\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
   });
 
   it('understands the original message headers in Swedish are not part of the reply', () => {
@@ -243,7 +237,7 @@ Till: Isacson Leiff
 
 Blah-blah-blah\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Allo! Follow up MIME!');
   });
 
   it('understands French date person wrote splitters', () => {
@@ -252,7 +246,7 @@ Blah-blah-blah\
 Le 23 janv. 2015 à 22:03, Brendan xxx <brendan.xxx@xxx.com<mailto:brendan.xxx@xxx.com>> a écrit:
 
 Bonjour!`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Lorem ipsum');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Lorem ipsum');
   });
 
   it('understands Polish date person wrote splitters', () => {
@@ -262,7 +256,7 @@ W dniu 28 stycznia 2015 01:53 użytkownik Zoe xxx <zoe.xxx@xxx.com>
 napisał:
 
 Blah!`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Lorem ipsum');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Lorem ipsum');
   });
 
   it('understands Swedish date person wrote splitters', () => {
@@ -270,7 +264,7 @@ Blah!`;
 Den 14 september, 2015 02:23:18, Valentino Rudy (valentino@rudy.be) skrev:
 
 Veniam laborum mlkshk kale chips authentic. Normcore mumblecore laboris, fanny pack readymade eu blog chia pop-up freegan enim master cleanse.`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Lorem');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Lorem');
   });
 
   it('understands Norwegian date person wrote splitters', () => {
@@ -278,7 +272,7 @@ Veniam laborum mlkshk kale chips authentic. Normcore mumblecore laboris, fanny p
 På 14 september 2015 på 02:23:18, Valentino Rudy (valentino@rudy.be) skrev:
 
 Veniam laborum mlkshk kale chips authentic. Normcore mumblecore laboris, fanny pack readymade eu blog chia pop-up freegan enim master cleanse.`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Lorem');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Lorem');
   });
 
   it('understands Norwegian date person wrote splitters', () => {
@@ -287,7 +281,7 @@ Veniam laborum mlkshk kale chips authentic. Normcore mumblecore laboris, fanny p
 Op 17-feb.-2015, om 13:18 heeft Julius Caesar <pantheon@rome.com> het volgende geschreven:
 
 Small batch beard laboris tempor, non listicle hella Tumblr heirloom. `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal(
+    expect(planer.extractFromPlain(msgBody)).to.equal(
       'Gluten-free culpa lo-fi et nesciunt nostrud.'
     );
   });
@@ -297,7 +291,7 @@ Small batch beard laboris tempor, non listicle hella Tumblr heirloom. `;
 >>> >>>  http://www.domain.com <<<
 Visit our site by clicking the link above`;
 
-    return expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
   });
 
   it('is not fooled into thinking a link ends a quotation', () => {
@@ -335,7 +329,7 @@ On Monday, 24 September, 2012 at 3:46 PM, bob wrote:
 _nonce=3dd518)
 >\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Blah');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Blah');
   });
 
   it('is ok with the og message block starting with a date', () => {
@@ -343,7 +337,7 @@ _nonce=3dd518)
 
 Date: Wed, 16 May 2012 00:15:02 -0600
 To: klizhentas@example.com`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Blah');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Blah');
   });
 
   it('is not fooled when stars surround headers', () => {
@@ -355,7 +349,7 @@ bob@example.com]
 *To:* travis@example.com
 *Subject:* Hello\
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
   });
 
   it('can handle weird dates in header block', () => {
@@ -367,7 +361,7 @@ To: bob@example.com
 Subject: [Ticket #8] Test
 \
 `;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Hi');
   });
 
   it('preserves forwarded messages', () => {
@@ -381,7 +375,7 @@ line subject
 To: rob@example.com
 
 Text`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
   });
 
   it('is not fooled by forwards inside quotations', () => {
@@ -399,17 +393,17 @@ line subject
 To: rob@example.com
 
 Text`;
-    return expect(planer.extractFromPlain(msgBody)).to.equal('Blah');
+    expect(planer.extractFromPlain(msgBody)).to.equal('Blah');
   });
 
   it('can handle a message with 2 links', () => {
     const msgBody = '<http://link1> <http://link2>';
-    return expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
   });
 
-  return it('does not throw errors on messages with malformed links', () => {
+  it('does not throw errors on messages with malformed links', () => {
     const msgBody =
       'http://test.lever.co/YOU HAVE AN INTERVIEW TODAY\nhttps://test.lever.co/interviews/07a605a0-0d0a-00e8-00aa-f02ca5350180 is coming up today athttps://www.google.com/calendar/event?eid=Z2FrbzhxcW0000YwbmtmMDN1ZWZ2OHAycnMgbGV2Z0000W1vLmNvbV82am00000000hvY3RjN200000000Vjc00000Bn.\n\nhttps://test.lever.co/interviews/0000a5ab-000b-43aa-a00a-f020003aaa84';
-    return expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody);
   });
 });

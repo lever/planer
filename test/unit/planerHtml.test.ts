@@ -1,14 +1,7 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-// @ts-expect-error TS(2451): Cannot redeclare block-scoped variable 'expect'.
-const { expect } = require('chai');
-const fs = require('fs');
+import { expect } from 'chai';
+import fs from 'fs';
+import path from 'path';
 const jsdom = require('jsdom');
-const path = require('path');
-// @ts-expect-error TS(2451): Cannot redeclare block-scoped variable 'planer'.
 const planer = require('../../src/planer');
 
 describe('planer#extractFromHtml', () => {
@@ -17,12 +10,12 @@ describe('planer#extractFromHtml', () => {
       FetchExternalResources: false,
       ProcessExternalResources: false,
     };
-    return (this.dom = new jsdom.JSDOM().window.document);
+    this.dom = new jsdom.JSDOM().window.document;
   });
 
   it('should return an empty body when given an empty body', function () {
     const msgBody = '';
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal('');
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal('');
   });
 
   it('should return a the text of a message with splitter inside blockqouote', function () {
@@ -38,9 +31,7 @@ describe('planer#extractFromHtml', () => {
   </div>
 
 </blockquote>`;
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
-      '<html><body>Reply\n</body></html>'
-    );
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal('<html><body>Reply\n</body></html>');
   });
 
   it('should return a the text of a message with splitter outside blockqouote', function () {
@@ -56,7 +47,7 @@ describe('planer#extractFromHtml', () => {
   </div>
 </blockquote>\
 `;
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
       '<html><body>Reply\n\n</body></html>'
     );
   });
@@ -75,7 +66,7 @@ describe('planer#extractFromHtml', () => {
   </div>
 </blockquote>\
 `;
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
       '<html><body>Reply\n<blockquote>  Regular  </blockquote>\n\n</body></html>'
     );
   });
@@ -101,7 +92,7 @@ Reply
 Reply
 
 </body></html>`;
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
   });
 
   it('handles invalid html', function () {
@@ -118,7 +109,7 @@ Reply
 
 <div/>\
 `;
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
       '<html><body>Reply\n<div>    </div></body></html>'
     );
   });
@@ -134,9 +125,7 @@ Reply
   </div>
 </div>`;
 
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(
-      '<html><body>Reply\n</body></html>'
-    );
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal('<html><body>Reply\n</body></html>');
   });
 
   it('does not miss a disclaimer after a blockquote', function () {
@@ -161,7 +150,7 @@ Reply
     const reply =
       '<html><body>\n  <div>\n    <div>\n      message\n    </div>\n    \n  </div>\n  <div>\n    disclaimer\n  </div>\n  \n</body></html>';
 
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
   });
 
   it('removes the tag with a quotation block that starts with "Date:"', function () {
@@ -182,7 +171,7 @@ Reply
 
     const reply = '<html><body><div>\n  message<br>\n  \n</div></body></html>';
 
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
   });
 
   it('removes the tag with a quotation block that starts with "From:"', function () {
@@ -201,7 +190,7 @@ text
 
     const reply = '<html><body><div>\nmessage<br>\n</div></body></html>';
 
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
   });
 
   it('is not fooled if the reply shared a div with the quotation', function () {
@@ -228,10 +217,10 @@ text
     </div>
 </body></html>`;
 
-    return expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
+    expect(planer.extractFromHtml(msgBody, this.dom)).to.equal(reply);
   });
 
-  return describe('examples from files', () => {
+  describe('examples from files', () => {
     // @ts-expect-error TS(2304): Cannot find name '$TSFixMeFromCoffee'.
     function absolutePath(relativePath: $TSFixMeFromCoffee) {
       return path.join(__dirname, relativePath);
@@ -252,7 +241,7 @@ text
 
       expect(extractedHtml).to.exist;
       expect(extractedHtml).to.contain(replySnippet);
-      return expect(extractedHtml).not.to.contain(originalMsgSnippet);
+      expect(extractedHtml).not.to.contain(originalMsgSnippet);
     });
 
     it('handles emails from Office 365', function () {
@@ -267,10 +256,10 @@ text
 
       expect(extractedHtml).to.exist;
       expect(extractedHtml).to.contain(replySnippet);
-      return expect(extractedHtml).not.to.contain(originalMsgSnippet);
+      expect(extractedHtml).not.to.contain(originalMsgSnippet);
     });
 
-    return it('handles emails from various Outlook versions', function () {
+    it('handles emails from various Outlook versions', function () {
       const replySnippet = 'This is how it looks on my emails';
       const originalMsgSnippet = "We'd love to set up a quick phone call with you";
 
@@ -282,7 +271,7 @@ text
 
       expect(extractedHtml).to.exist;
       expect(extractedHtml).to.contain(replySnippet);
-      return expect(extractedHtml).not.to.contain(originalMsgSnippet);
+      expect(extractedHtml).not.to.contain(originalMsgSnippet);
     });
   });
 });
