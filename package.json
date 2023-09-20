@@ -1,13 +1,14 @@
 {
   "name": "planer",
-  "version": "1.1.1",
+  "version": "1.3.0",
   "description": "Remove reply quotations from emails",
   "main": "lib/planer.js",
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "mocha test/",
+    "test": "mocha --reporter spec --require coffeescript/register \"test/**/*.{js,coffee}\"",
+    "debug": "mocha --inspect-brk --reporter spec --require coffeescript/register \"test/**/*.{js,coffee}\"",
     "compile": "coffee -o lib -c src"
   },
   "repository": {
@@ -27,9 +28,9 @@
   },
   "homepage": "https://github.com/lever/planer#readme",
   "devDependencies": {
-    "chai": "^3.4.1",
-    "coffee-script": "^1.10.0",
-    "jsdom": "^11.6.0",
-    "mocha": "^2.3.4"
+    "chai": "^4.2.0",
+    "coffeescript": "^2.5.1",
+    "jsdom": "^16.2.2",
+    "mocha": "^6.2.3"
   }
 }

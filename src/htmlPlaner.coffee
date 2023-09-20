@@ -86,6 +86,13 @@ exports.cutGmailQuote = (emailDocument) ->
   removeNodes(nodesArray)
   return true
 
+exports.cutYahooQuote = (emailDocument) ->
+  nodesArray = emailDocument.getElementsByClassName('yahoo_quoted')
+  return false unless nodesArray.length > 0
+
+  removeNodes(nodesArray)
+  return true
+
 exports.cutMicrosoftQuote = (emailDocument) ->
   splitterElement = findMicrosoftSplitter(emailDocument)
   return false unless splitterElement?
@@ -200,10 +207,13 @@ exports.replaceBreakTagsWithLineFeeds = (emailDocument) ->
 
 # Queries to find a splitter that's the only child of a single parent div
 # Usually represents the dividing line between messages in the Outlook html
+# using case-insensitive modifier "i" at the end of each selector since the color hex color has been seen lowercased in some outlook emails
 OUTLOOK_SPLITTER_QUERY_SELECTORS =
-  outlook2007: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
-  outlookForAndroid: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm']"
-  windowsMail: "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;']"
+  outlook2007and2010International: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm' i]"
+  outlook2007and2010American: "div[style='border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0in 0in 0in' i]"
+  outlook2013_2016_2019International: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm' i]"
+  outlook2013_2016_2019American: "div[style='border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in' i]"
+  windowsMail: "div[style='padding-top: 5px; border-top-color: rgb(229, 229, 229); border-top-width: 1px; border-top-style: solid;' i]"
 
 # More complicated Xpath queries for versions of Outlook that don't use the dividing lines
 OUTLOOK_XPATH_SPLITTER_QUERIES =
@@ -216,7 +226,6 @@ OUTLOOK_SPLITTER_QUOTE_IDS =
 
 findMicrosoftSplitter = (emailDocument) ->
   possibleSplitterElements = []
-
   for _, querySelector of OUTLOOK_SPLITTER_QUERY_SELECTORS
     if (splitterElement = findOutlookSplitterWithQuerySelector(emailDocument, querySelector))
       possibleSplitterElements.push splitterElement
@@ -258,10 +267,9 @@ findOutlookSplitterWithXpathQuery = (emailDocument, xpathQuery) ->
 
 findOutlookSplitterWithQuerySelector = (emailDocument, query) ->
   splitterResult = emailDocument.querySelectorAll(query)
+  return unless splitterResult.length > 0
 
-  return unless splitterResult.length > 1
-
-  splitterElement = splitterResult[1]
+  splitterElement = splitterResult[0]
 
   if splitterElement.parentElement? && splitterElement == splitterElement.parentElement.children[0]
     splitterElement = splitterElement.parentElement

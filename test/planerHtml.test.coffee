@@ -212,7 +212,6 @@ describe 'planer#extractFromHtml', ->
       msgBody = fs.readFileSync(absolutePath('examples/html/microsoft-namespaces.html'), 'utf8')
       expect(msgBody).to.contain(replySnippet)
       expect(msgBody).to.contain(originalMsgSnippet)
-
       extractedHtml = planer.extractFromHtml(msgBody, @dom)
 
       expect(extractedHtml).to.exist
@@ -234,7 +233,7 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
 
     it 'handles emails from various Outlook versions', ->
-      replySnippet = 'This is how it looks on my emails'
+      replySnippet = 'We can talk tomorrow.'
       originalMsgSnippet = "We'd love to set up a quick phone call with you"
 
       msgBody = fs.readFileSync(absolutePath('examples/html/outlook-mixed.html'), 'utf8')
@@ -247,3 +246,100 @@ describe 'planer#extractFromHtml', ->
       expect(extractedHtml).to.contain(replySnippet)
       expect(extractedHtml).not.to.contain(originalMsgSnippet)
 
+
+    it 'handles emails from Office 2007/2010 American', ->
+      replySnippet = "OK by me"
+      originalMsgSnippet = 'further revised'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/outlook-2010-american.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from Office 2007/2010 International', ->
+      replySnippet = "OK by me"
+      originalMsgSnippet = 'further revised'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/outlook-2010-international.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from Office 2013/2016/2019 American', ->
+      replySnippet = "That time works for me."
+      originalMsgSnippet = 'I can meet tomorrow.'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/outlook-2016-american.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from Office 2013/2016/2019 International', ->
+      replySnippet = "That time works for me."
+      originalMsgSnippet = 'I can meet tomorrow.'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/outlook-2016-international.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails from Apple iOS Mail', ->
+      replySnippet = "html reply"
+      originalMsgSnippet = 'original message from GMail'
+
+      msgBody = fs.readFileSync(absolutePath('examples/html/iosMail.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+
+    it 'handles emails reply chains involving multiple email clients', ->
+      replySnippet = "Here is the answer"
+      originalMsgSnippet = 'I am having trouble'
+      msgBody = fs.readFileSync(absolutePath('examples/html/mixedEmailClientReplyChain.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
+
+    it 'handles emails Yahoo replies using the yahooo_quoted class', ->
+      replySnippet = "such a big problem"
+      originalMsgSnippet = 'new process'
+      msgBody = fs.readFileSync(absolutePath('examples/html/yahooMail2020.html'), 'utf8')
+      expect(msgBody).to.contain(replySnippet)
+      expect(msgBody).to.contain(originalMsgSnippet)
+
+      extractedHtml = planer.extractFromHtml(msgBody, @dom)
+
+      expect(extractedHtml).to.exist
+      expect(extractedHtml).to.contain(replySnippet)
+      expect(extractedHtml).not.to.contain(originalMsgSnippet)
