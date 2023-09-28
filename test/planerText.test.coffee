@@ -55,10 +55,20 @@ describe 'planer#extractFromPlain', ->
       > Test
       Regards, Roman"""
     reply = """Test reply
-
       Regards, Roman"""
 
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)
+
+  it 'detects inline replies', ->
+    msgBody = """Please see my responses inline
+      On 04/19/2011 07:10 AM, Roman Tkachenko wrote:
+
+      > Question 1
+      Response 1
+      > Question 2
+      Response 2"""
+
+    expect(planer.extractFromPlain(msgBody)).to.equal(msgBody)
 
   it 'detects wrapping of nested replies', ->
     msgBody = """Test reply
@@ -74,7 +84,6 @@ describe 'planer#extractFromPlain', ->
 
       Regards, Roman"""
     reply = """Test reply
-
       Regards, Roman"""
 
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)
@@ -91,7 +100,6 @@ describe 'planer#extractFromPlain', ->
       Regards, Roman"""
 
     reply = """Test reply
-
       Regards, Roman"""
 
     expect(planer.extractFromPlain(msgBody)).to.equal(reply)

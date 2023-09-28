@@ -207,8 +207,8 @@ exports.processMarkedLines = (lines, markers, returnFlags = {}) ->
     return lines
 
   # Find inline replies (tm's following the first m in markers string)
-  inlineMatchRegex = new RegExp('m(?=e*((?:t+e*)+)m)', 'g')
-  while inlineReplyMatch = inlineMatchRegex.exec(lines)
+  inlineMatchRegex = new RegExp('m(?=e*(t[te]*)m)', 'g')
+  while inlineReplyMatch = inlineMatchRegex.exec(markers)
     inlineReplyIndex = markers.indexOf(inlineReplyMatch[1], inlineReplyMatch.index)
     isInlineReplyLink = false
 
@@ -264,7 +264,7 @@ preprocess = (msgBody, delimiter, contentType = 'text/plain') ->
 
   if contentType == 'text/plain' && msgBody.length < MAX_LINE_LENGTH
     # ON_DATE_SMB_WROTE has 4 captured groups
-    msgBody = msgBody.replace REGEXES.ON_DATE_SMB_WROTE, (entireMatch, groupMatch1, groupMatch2, groupMatch3, groupMatch4, matchIndex) ->
+    msgBody = msgBody.replace REGEXES.ON_DATE_SMB_WROTE, (entireMatch, groupMatch1, groupMatch2, groupMatch3, groupMatch4, groupMatch5, matchIndex) ->
       if matchIndex && msgBody[matchIndex - 1] != "\n"
         return "#{ delimiter }#{ entireMatch }"
       else
