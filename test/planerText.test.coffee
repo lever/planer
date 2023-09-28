@@ -375,3 +375,8 @@ describe 'planer#extractFromPlain', ->
   it 'does not throw errors on messages with malformed links', ->
     msgBody = "http://test.lever.co/YOU HAVE AN INTERVIEW TODAY\nhttps://test.lever.co/interviews/07a605a0-0d0a-00e8-00aa-f02ca5350180 is coming up today athttps://www.google.com/calendar/event?eid=Z2FrbzhxcW0000YwbmtmMDN1ZWZ2OHAycnMgbGV2Z0000W1vLmNvbV82am00000000hvY3RjN200000000Vjc00000Bn.\n\nhttps://test.lever.co/interviews/0000a5ab-000b-43aa-a00a-f020003aaa84"
     expect(planer.extractFromPlain(msgBody)).to.equal(msgBody)
+
+  it 'does not take longer than expected when processing inline replies that do not end with a marker', ->
+    this.timeout(1000);
+    msgBody = "Reply!\n\nOn 15-Dec-2011, at 6:54 PM, Sean Carter <s.carter@example.com> wrote:\n> \n>-Sean\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp";
+    expect(planer.extractFromPlain(msgBody)).to.exist
