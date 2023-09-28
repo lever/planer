@@ -377,6 +377,7 @@ describe 'planer#extractFromPlain', ->
     expect(planer.extractFromPlain(msgBody)).to.equal(msgBody)
 
   it 'does not take longer than expected when processing inline replies that do not end with a marker', ->
-    this.timeout(1000);
-    msgBody = "Reply!\n\nOn 15-Dec-2011, at 6:54 PM, Sean Carter <s.carter@example.com> wrote:\n> \n>-Sean\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp\nmerp\nderp";
+    msgBody = "On 15-Dec-2011, at 6:54 PM, Sean Carter <s.carter@example.com> wrote:\n>-Sean";
+    # Add a bunch of text lines so that the markers array ends up with something like "smttttttttttttttttttttttttt"
+    msgBody += "\nlorem\nipsum" for i in [0...15]
     expect(planer.extractFromPlain(msgBody)).to.exist
