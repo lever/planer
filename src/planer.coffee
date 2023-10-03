@@ -207,6 +207,23 @@ exports.processMarkedLines = (lines, markers, returnFlags = {}) ->
     return lines
 
   # Find inline replies (tm's following the first m in markers string)
+  # This RegExp is designed to find inline replies which are defined as messages that
+  # contain new content (m) before and after some amount of quoted text (t)
+  #
+  # This RegExp is executed on the processed line markers,
+  # rather than the raw message lines themselves
+  # 
+  # The RegExp can be broken into two parts. A middle part that is meant
+  # to capture the quoted text, and the surrounding "m" markers.
+  #
+  # The (?=e*) is designated as a  non-capturing group, because we want 
+  # the index of the match to be the start of the inline reply while
+  # excluding any preceding empty lines ("e" markers).
+  # The t[te]* is meant to capture any combination of t and e markers, with
+  # the capture group starting at the first line of quoted text ("t" marker).
+  #
+  # Together, the previous two components of the RegExp capture the quoted text
+  # To get the final RegExp, we surround those components with two "m" markers.
   inlineMatchRegex = new RegExp('m(?=e*(t[te]*)m)', 'g')
   while inlineReplyMatch = inlineMatchRegex.exec(markers)
     inlineReplyIndex = markers.indexOf(inlineReplyMatch[1], inlineReplyMatch.index)
