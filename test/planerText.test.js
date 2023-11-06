@@ -4,7 +4,7 @@
 
   expect = require('chai').expect;
 
-  planer = require('../src/planer');
+  planer = require('../lib/planer');
 
   describe('planer#extractFromPlain', function() {
     it('should return a the test of a simple message', function() {

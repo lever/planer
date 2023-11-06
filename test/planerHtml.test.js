@@ -10,7 +10,7 @@
 
   path = require('path');
 
-  planer = require('../src/planer');
+  planer = require('../lib/planer');
 
   describe('planer#extractFromHtml', function() {
     before('configure jsdom', function() {
