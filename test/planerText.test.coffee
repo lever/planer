@@ -380,4 +380,7 @@ describe 'planer#extractFromPlain', ->
     msgBody = "On 15-Dec-2011, at 6:54 PM, Sean Carter <s.carter@example.com> wrote:\n>-Sean";
     # Add a bunch of text lines so that the markers array ends up with something like "smttttttttttttttttttttttttt"
     msgBody += "\nlorem\nipsum" for i in [0...15]
+    timeStart = Date.now()
     expect(planer.extractFromPlain(msgBody)).to.exist
+    timeEnd = Date.now()
+    expect(timeEnd - timeStart).to.be.below(5000, 'extractFromPlain took too long, potential for DDoS detected.');
