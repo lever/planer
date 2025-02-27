@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/lever/planer#readme",
   "devDependencies": {
-    "chai": "^3.4.1",
+    "chai": "^5.2.0",
     "coffee-script": "^1.10.0",
     "jsdom": "^11.6.0",
     "mocha": "^2.3.4"
